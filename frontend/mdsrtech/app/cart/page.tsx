@@ -9,6 +9,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
 interface CartProduct {
   id: number;
   title: string;
@@ -70,7 +72,7 @@ export default function CartPage() {
   const fetchCart = useCallback(async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:5000/api/cart', {
+      const response = await fetch(`${API_URL}/cart`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -136,7 +138,7 @@ export default function CartPage() {
     
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:5000/api/cart/update', {
+      const response = await fetch(`${API_URL}/cart/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -213,7 +215,7 @@ export default function CartPage() {
     
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:5000/api/cart/remove', {
+      const response = await fetch(`${API_URL}/cart/remove`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -247,7 +249,7 @@ export default function CartPage() {
     
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:5000/api/cart/apply-promo', {
+      const response = await fetch(`${API_URL}/cart/apply-promo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
