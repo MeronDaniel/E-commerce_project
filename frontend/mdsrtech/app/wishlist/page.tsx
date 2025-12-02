@@ -7,6 +7,7 @@ import { useToast } from '@/contexts/ToastContext';
 import { useCart } from '@/contexts/CartContext';
 import { Heart, Trash2, ShoppingCart, Plus, Minus, Tag } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import Navbar from '../components/Navbar';
 
 interface WishlistProduct {
@@ -44,35 +45,38 @@ export default function WishlistPage() {
   const [removingId, setRemovingId] = useState<number | null>(null);
 
   useEffect(() => {
+    const loadWishlist = async () => {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/wishlist`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setItems(data.items || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch wishlist:', error);
+        showToast('Failed to load wishlist', 'error');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     if (!authLoading && isAuthenticated) {
-      fetchWishlist();
+      loadWishlist();
     } else if (!authLoading) {
       setIsLoading(false);
     }
-  }, [isAuthenticated, authLoading]);
-
-  const fetchWishlist = async () => {
-    const token = localStorage.getItem('access_token');
-    if (!token) return;
-
-    try {
-      const response = await fetch(`${API_URL}/wishlist`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setItems(data.items || []);
-      }
-    } catch (error) {
-      console.error('Failed to fetch wishlist:', error);
-      showToast('Failed to load wishlist', 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [isAuthenticated, authLoading, showToast]);
 
   const handleRemove = async (productId: number, productName: string) => {
     setRemovingId(productId);
@@ -243,14 +247,9 @@ function WishlistProductCard({
   const { addToCart } = useCart();
   const { showToast } = useToast();
 
-  // Calculate effective price
-  const effectivePrice = product.is_on_sale && product.sale_price_cents 
-    ? product.sale_price_cents 
-    : product.price_cents;
-
   const handleAddToCart = async () => {
     setIsAddingToCart(true);
-    const result = await addToCart(product.id, quantity, product.title);
+    const result = await addToCart(product.id, quantity);
     setIsAddingToCart(false);
 
     if (result.success) {
@@ -292,10 +291,12 @@ function WishlistProductCard({
         <div className="relative h-64 bg-gray-100 overflow-hidden">
           <div className="absolute inset-0 flex items-center justify-center">
             {product.image ? (
-              <img 
+              <Image 
                 src={product.image.url} 
                 alt={product.image.alt_text || product.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               />
             ) : (
               <div className="w-40 h-40 bg-gray-200 rounded-lg flex items-center justify-center">
@@ -315,14 +316,14 @@ function WishlistProductCard({
 
       {/* Price and Stock */}
       <div className="px-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex flex-col min-h-[3.5rem]">
             {product.is_on_sale && product.sale_price_cents ? (
               <>
                 <p className="text-2xl font-bold text-red-600">
                   {formatPrice(product.sale_price_cents, product.currency)}
                 </p>
-                <p className="text-lg text-gray-400 line-through">
+                <p className="text-sm text-gray-400 line-through">
                   {formatPrice(product.price_cents, product.currency)}
                 </p>
               </>
@@ -332,7 +333,7 @@ function WishlistProductCard({
               </p>
             )}
           </div>
-          <p className={`text-sm font-medium ${product.stock < 10 ? 'text-red-500' : 'text-gray-500'}`}>
+          <p className={`text-sm font-medium mt-2 ${product.stock < 10 ? 'text-red-500' : 'text-gray-500'}`}>
             {product.stock} in stock
           </p>
         </div>

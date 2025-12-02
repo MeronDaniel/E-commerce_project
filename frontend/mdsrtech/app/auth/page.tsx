@@ -136,7 +136,7 @@ export default function AuthPage() {
           setError(result.error || 'Registration failed');
         }
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);

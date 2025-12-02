@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/contexts/ToastContext';
 import { ShoppingCart, LogIn, Trash2, Plus, Minus, Tag, ArrowRight, Package, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
 
@@ -52,7 +53,7 @@ interface CartData {
 }
 
 export default function CartPage() {
-  const { isAuthenticated, isLoading: authLoading, user } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { refreshCart } = useCart();
   const { showToast } = useToast();
   
@@ -154,7 +155,7 @@ export default function CartPage() {
         // Revert on error by re-fetching
         await fetchCart();
       }
-    } catch (error) {
+    } catch {
       showToast('Failed to update quantity', 'error');
       // Revert on error by re-fetching
       await fetchCart();
@@ -182,7 +183,7 @@ export default function CartPage() {
     });
   };
 
-  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, productId: number, productName: string, currentQuantity: number, stock: number) => {
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.currentTarget.blur();
     }
@@ -230,7 +231,7 @@ export default function CartPage() {
         showToast(data.error || 'Failed to remove item', 'error');
         await fetchCart();
       }
-    } catch (error) {
+    } catch {
       showToast('Failed to remove item', 'error');
       await fetchCart();
     }
@@ -266,7 +267,7 @@ export default function CartPage() {
       } else {
         showToast(data.error || 'Invalid promo code', 'error');
       }
-    } catch (error) {
+    } catch {
       showToast('Failed to apply promo code', 'error');
     } finally {
       setIsApplyingPromo(false);
@@ -404,10 +405,12 @@ export default function CartPage() {
                         {/* Product Image */}
                         <div className="relative w-22 h-22 bg-gray-100 rounded-lg shrink-0 flex items-center justify-center">
                           {item.product.image ? (
-                            <img
+                            <Image
                               src={item.product.image.url}
                               alt={item.product.image.alt_text || item.product.title}
-                              className="w-full h-full object-cover rounded-lg"
+                              fill
+                              className="object-cover rounded-lg"
+                              sizes="88px"
                             />
                           ) : (
                             <Package className="w-8 h-8 text-gray-400" />
@@ -493,7 +496,7 @@ export default function CartPage() {
                                   setInputValues(prev => ({ ...prev, [item.product_id]: e.target.value }));
                                 }}
                                 onBlur={() => handleInputBlur(item.product_id, item.product.title, item.quantity, item.product.stock)}
-                                onKeyDown={(e) => handleInputKeyDown(e, item.product_id, item.product.title, item.quantity, item.product.stock)}
+                                onKeyDown={handleInputKeyDown}
                                 min="0"
                                 max={item.product.stock}
                                 className="w-16 text-center py-2 border border-gray-200 rounded-lg font-medium focus:outline-none focus:border-blue-500"
@@ -564,7 +567,6 @@ export default function CartPage() {
                 {/* Price Breakdown */}
                 {(() => {
                   const subtotal = cart.subtotal_cents / 100;
-                  const originalSubtotal = cart.original_subtotal_cents / 100;
                   const saleSavings = cart.sale_savings_cents / 100;
                   let promoDiscount = 0;
                   const shipping = cart.shipping_cents / 100;

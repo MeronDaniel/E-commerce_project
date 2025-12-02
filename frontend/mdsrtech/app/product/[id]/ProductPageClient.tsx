@@ -85,7 +85,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
     }
 
     setIsAddingToCart(true);
-    const result = await addToCart(product.id, quantity, product.name);
+    const result = await addToCart(product.id, quantity);
     setIsAddingToCart(false);
 
     if (result.success) {

@@ -54,6 +54,7 @@ export default function HeroSection() {
         clearInterval(intervalRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slides.length]);
 
   const goToSlide = (index: number) => {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Heart, Plus, Minus, ShoppingCart, Tag } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -75,7 +76,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     }
 
     setIsAddingToCart(true);
-    const result = await addToCart(product.id, quantity, product.name);
+    const result = await addToCart(product.id, quantity);
     setIsAddingToCart(false);
 
     if (result.success) {
@@ -139,10 +140,12 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Product Image */}
         <div className="relative h-64 bg-gray-100 overflow-hidden">
           {product.image && product.image !== '/placeholder-product.jpg' ? (
-            <img
+            <Image
               src={product.image}
               alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
@@ -163,14 +166,14 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       {/* Price and Stock - Not Clickable */}
       <div className="px-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex flex-col min-h-[3.5rem]">
             {product.isOnSale && product.originalPrice ? (
               <>
                 <p className="text-2xl font-bold text-red-600">
                   ${product.price.toFixed(2)}
                 </p>
-                <p className="text-lg text-gray-400 line-through">
+                <p className="text-sm text-gray-400 line-through">
                   ${product.originalPrice.toFixed(2)}
                 </p>
               </>
@@ -181,7 +184,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
           <p
-            className={`text-sm font-medium ${
+            className={`text-sm font-medium mt-2 ${
               product.stock < 10 ? 'text-red-500' : 'text-gray-500'
             }`}
           >

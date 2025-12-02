@@ -18,7 +18,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [wishlistIds, setWishlistIds] = useState<number[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
   const fetchWishlistIds = useCallback(async () => {
     const token = localStorage.getItem('access_token');
@@ -42,12 +42,20 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
 
   // Fetch wishlist IDs when user is authenticated
   useEffect(() => {
-    if (!authLoading && isAuthenticated) {
-      setIsLoading(true);
-      fetchWishlistIds().finally(() => setIsLoading(false));
-    } else if (!isAuthenticated) {
-      setWishlistIds([]);
-    }
+    let mounted = true;
+    
+    const loadWishlist = async () => {
+      if (!authLoading && isAuthenticated) {
+        await fetchWishlistIds();
+      } else if (!isAuthenticated) {
+        if (mounted) {
+          setWishlistIds([]);
+        }
+      }
+    };
+    
+    loadWishlist();
+    return () => { mounted = false; };
   }, [isAuthenticated, authLoading, fetchWishlistIds]);
 
   const isInWishlist = useCallback((productId: number): boolean => {

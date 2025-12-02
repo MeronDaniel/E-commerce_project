@@ -7,7 +7,7 @@ interface CartContextType {
   itemCount: number;
   totalItems: number;
   isLoading: boolean;
-  addToCart: (productId: number, quantity: number, productName: string) => Promise<{ success: boolean; error?: string }>;
+  addToCart: (productId: number, quantity: number) => Promise<{ success: boolean; error?: string }>;
   updateQuantity: (productId: number, quantity: number) => Promise<{ success: boolean; error?: string }>;
   removeFromCart: (productId: number) => Promise<{ success: boolean; error?: string }>;
   refreshCart: () => Promise<void>;
@@ -21,7 +21,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [itemCount, setItemCount] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
   const fetchCartCount = useCallback(async () => {
     const token = localStorage.getItem('access_token');
@@ -46,16 +46,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Fetch cart count when user is authenticated
   useEffect(() => {
-    if (!authLoading && isAuthenticated) {
-      setIsLoading(true);
-      fetchCartCount().finally(() => setIsLoading(false));
-    } else if (!isAuthenticated) {
-      setItemCount(0);
-      setTotalItems(0);
-    }
+    let mounted = true;
+    
+    const loadCart = async () => {
+      if (!authLoading && isAuthenticated) {
+        await fetchCartCount();
+      } else if (!isAuthenticated) {
+        if (mounted) {
+          setItemCount(0);
+          setTotalItems(0);
+        }
+      }
+    };
+    
+    loadCart();
+    return () => { mounted = false; };
   }, [isAuthenticated, authLoading, fetchCartCount]);
 
-  const addToCart = async (productId: number, quantity: number, productName: string): Promise<{ success: boolean; error?: string }> => {
+  const addToCart = async (productId: number, quantity: number): Promise<{ success: boolean; error?: string }> => {
     const token = localStorage.getItem('access_token');
     if (!token) {
       return { success: false, error: 'Not authenticated' };
