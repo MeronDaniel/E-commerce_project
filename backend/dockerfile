@@ -13,8 +13,8 @@ RUN pip install gunicorn
 # Copy the rest of the app
 COPY . .
 
-# Expose the port Flask runs on
-EXPOSE 5000
+# Expose the port (Railway uses PORT env variable)
+EXPOSE 8080
 
-# Run with gunicorn for production
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "app:app"]
+# Run with gunicorn for production - use PORT env variable with fallback
+CMD gunicorn --bind 0.0.0.0:${PORT:-8080} --workers 2 app:app
