@@ -567,7 +567,7 @@ export default function CartPage() {
                   const originalSubtotal = cart.original_subtotal_cents / 100;
                   const saleSavings = cart.sale_savings_cents / 100;
                   let promoDiscount = 0;
-                  let shipping = cart.shipping_cents / 100;
+                  const shipping = cart.shipping_cents / 100;
                   
                   if (appliedPromo) {
                     promoDiscount = subtotal * (appliedPromo.discount_percent / 100);
