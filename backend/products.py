@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import Product, Category, Brand, ProductImage
 from extensions import db
+from sqlalchemy import or_
 
 products_bp = Blueprint("products", __name__, url_prefix="/api")
 
@@ -10,6 +11,9 @@ GET /api/products: List all active products
 GET /api/products/:id: Fetch product details by ID
 GET /api/products/slug/:slug: Fetch product details by slug
 GET /api/categories/:slug/products: Fetch products by category
+GET /api/search: Search products by query
+GET /api/categories: Get all categories
+GET /api/brands: Get all brands
 """
 
 def product_to_dict(product):
@@ -109,19 +113,100 @@ def get_products_by_category(category_slug):
         products = Product.query.filter_by(category_id=category.id, is_active=True).all()
         products_list = [product_to_dict(p) for p in products]
         
+        # Get unique brands that have products in this category
+        brand_ids = set(p.brand_id for p in products if p.brand_id)
+        brands = Brand.query.filter(Brand.id.in_(brand_ids)).all() if brand_ids else []
+        brands_list = [{'id': b.id, 'name': b.name, 'slug': b.slug} for b in brands]
+        
         return jsonify({
             'products': products_list, 
             'category': {
+                'id': category.id,
                 'name': category.name, 
                 'slug': category.slug,
                 'sale_percent': category.sale_percent
-            }
+            },
+            'brands': brands_list
         }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
 
 
+@products_bp.route('/search', methods=["GET"])
+def search_products():
+    """Search products by query string - searches title, description, brand, and category"""
+    try:
+        query = request.args.get('q', '').strip()
+        
+        if not query:
+            return jsonify({'products': [], 'query': ''}), 200
+        
+        # Search in title, description, brand name, and category name
+        search_term = f'%{query}%'
+        
+        products = Product.query.join(Brand, Product.brand_id == Brand.id, isouter=True)\
+            .join(Category, Product.category_id == Category.id, isouter=True)\
+            .filter(
+                Product.is_active == True,
+                or_(
+                    Product.title.ilike(search_term),
+                    Product.description.ilike(search_term),
+                    Brand.name.ilike(search_term),
+                    Category.name.ilike(search_term)
+                )
+            ).all()
+        
+        products_list = [product_to_dict(p) for p in products]
+        
+        # Get unique brands and categories from results for filters
+        brand_ids = set(p.brand_id for p in products if p.brand_id)
+        category_ids = set(p.category_id for p in products if p.category_id)
+        
+        brands = Brand.query.filter(Brand.id.in_(brand_ids)).all() if brand_ids else []
+        categories = Category.query.filter(Category.id.in_(category_ids)).all() if category_ids else []
+        
+        brands_list = [{'id': b.id, 'name': b.name, 'slug': b.slug} for b in brands]
+        categories_list = [{'id': c.id, 'name': c.name, 'slug': c.slug} for c in categories]
+        
+        return jsonify({
+            'products': products_list,
+            'query': query,
+            'brands': brands_list,
+            'categories': categories_list,
+            'total': len(products_list)
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
+@products_bp.route('/categories', methods=["GET"])
+def get_all_categories():
+    """Get all categories"""
+    try:
+        categories = Category.query.order_by(Category.name).all()
+        categories_list = [{
+            'id': c.id,
+            'name': c.name,
+            'slug': c.slug,
+            'sale_percent': c.sale_percent
+        } for c in categories]
+        
+        return jsonify({'categories': categories_list}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
+
+@products_bp.route('/brands', methods=["GET"])
+def get_all_brands():
+    """Get all brands"""
+    try:
+        brands = Brand.query.order_by(Brand.name).all()
+        brands_list = [{
+            'id': b.id,
+            'name': b.name,
+            'slug': b.slug
+        } for b in brands]
+        
+        return jsonify({'brands': brands_list}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

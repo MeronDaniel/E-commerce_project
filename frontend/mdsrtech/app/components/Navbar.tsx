@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, FormEvent } from 'react';
 import { ShoppingCart, User, Search, ChevronDown, LogOut, Heart, Package, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -10,11 +10,21 @@ import { useCart } from '@/contexts/CartContext';
 export default function Navbar() {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const { user, isAuthenticated, logout, isLoading } = useAuth();
   const { totalItems } = useCart();
+
+  const handleSearch = (e: FormEvent) => {
+    e.preventDefault();
+    const trimmed = searchQuery.trim();
+    if (trimmed) {
+      router.push(`/search?q=${encodeURIComponent(trimmed)}`);
+      setSearchQuery('');
+    }
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -49,12 +59,12 @@ export default function Navbar() {
   };
 
   const categories = [
-    'Laptops',
-    'Phones',
-    'Tablets',
-    'Audio',
-    'Accessories',
-    'Wearables',
+    { name: 'Laptops', slug: 'laptops' },
+    { name: 'Phones', slug: 'phones' },
+    { name: 'Tablets', slug: 'tablets' },
+    { name: 'Audio', slug: 'audio' },
+    { name: 'Accessories', slug: 'accessories' },
+    { name: 'Wearables', slug: 'wearables' },
   ];
 
   return (
@@ -94,12 +104,14 @@ export default function Navbar() {
             {isCategoriesOpen && (
               <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
                 {categories.map((category) => (
-                  <button
-                    key={category}
-                    className="w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                  <Link
+                    key={category.slug}
+                    href={`/category/${category.slug}`}
+                    onClick={() => setIsCategoriesOpen(false)}
+                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                   >
-                    {category}
-                  </button>
+                    {category.name}
+                  </Link>
                 ))}
               </div>
             )}
@@ -107,14 +119,18 @@ export default function Navbar() {
 
           {/* Search Bar */}
           <div className="flex-1 max-w-xl mx-8">
-            <div className="relative">
+            <form onSubmit={handleSearch} className="relative">
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for products..."
                 className="w-full px-4 py-2 pl-10 pr-4 text-gray-700 bg-gray-100 border border-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            </div>
+              <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer">
+                <Search className="w-5 h-5 text-gray-400 hover:text-blue-600 transition-colors" />
+              </button>
+            </form>
           </div>
 
           {/* Cart and Profile */}
