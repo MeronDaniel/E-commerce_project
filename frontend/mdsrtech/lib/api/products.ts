@@ -42,7 +42,7 @@ export interface Product {
 export async function getAllProducts(): Promise<Product[]> {
   try {
     const response = await fetch(`${API_BASE_URL}/products`, {
-      next: { revalidate: 300 } // Cache for 5 minutes
+      cache: 'no-store' // Always fetch fresh data
     });
     
     if (!response.ok) {
