@@ -5,6 +5,7 @@ from products import products_bp
 from cart import carts_bp
 from orders import order_bp
 from wishlist import wishlist_bp
+from checkout import checkout_bp
 import os
 from dotenv import load_dotenv
 
@@ -53,6 +54,7 @@ def create_app():
     app.register_blueprint(carts_bp)
     app.register_blueprint(order_bp)
     app.register_blueprint(wishlist_bp)
+    app.register_blueprint(checkout_bp)
     
     # JWT error handlers
     @jwt.expired_token_loader

@@ -6,6 +6,7 @@ import { Plus, Minus, ShoppingCart, Heart, Tag, Package, Truck, Shield, ChevronR
 import { useState } from 'react';
 import Image from 'next/image';
 import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
 import ProductCard from '../../components/ProductCard';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWishlist } from '@/contexts/WishlistContext';
@@ -338,6 +339,7 @@ export default function ProductPageClient({ product, suggestedProducts = [] }: P
           )}
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

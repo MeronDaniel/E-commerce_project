@@ -9,6 +9,7 @@ import { Heart, Trash2, ShoppingCart, Plus, Minus, Tag } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 interface WishlistProduct {
   id: number;
@@ -101,25 +102,26 @@ export default function WishlistPage() {
   // Show loading state
   if (authLoading || isLoading) {
     return (
-      <>
+      <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="min-h-screen bg-gray-50 pt-24 pb-12">
+        <main className="flex-1 bg-gray-50 pt-24 pb-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-center items-center h-64">
               <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
             </div>
           </div>
         </main>
-      </>
+        <Footer />
+      </div>
     );
   }
 
   // Not authenticated - show login prompt
   if (!isAuthenticated) {
     return (
-      <>
+      <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="min-h-screen bg-gray-50 pt-24 pb-12">
+        <main className="flex-1 bg-gray-50 pt-24 pb-12">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 text-center">
               <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -157,16 +159,17 @@ export default function WishlistPage() {
             </div>
           </div>
         </main>
-      </>
+        <Footer />
+      </div>
     );
   }
 
   // Empty wishlist
   if (items.length === 0) {
     return (
-      <>
+      <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="min-h-screen bg-gray-50 pt-24 pb-12">
+        <main className="flex-1 bg-gray-50 pt-24 pb-12">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 text-center">
               <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -189,15 +192,16 @@ export default function WishlistPage() {
             </div>
           </div>
         </main>
-      </>
+        <Footer />
+      </div>
     );
   }
 
   // Wishlist with items
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="min-h-screen bg-gray-50 pt-24 pb-12">
+      <main className="flex-1 bg-gray-50 pt-24 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
@@ -224,7 +228,8 @@ export default function WishlistPage() {
           </div>
         </div>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }
 

@@ -6,6 +6,7 @@ import { Search, SlidersHorizontal, X, Home, Package } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -157,25 +158,26 @@ function SearchContent() {
 
   if (isLoading) {
     return (
-      <>
+      <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="min-h-screen bg-gray-50 pt-24 pb-12">
+        <main className="flex-1 bg-gray-50 pt-24 pb-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-center items-center h-64">
               <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
             </div>
           </div>
         </main>
-      </>
+        <Footer />
+      </div>
     );
   }
 
   // No results found
   if (!isLoading && products.length === 0 && query) {
     return (
-      <>
+      <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="min-h-screen bg-gray-50 pt-24 pb-12 flex items-start justify-center">
+        <main className="flex-1 bg-gray-50 pt-24 pb-12 flex items-start justify-center">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-[15vh]">
             <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 text-center">
               <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -197,14 +199,15 @@ function SearchContent() {
             </div>
           </div>
         </main>
-      </>
+        <Footer />
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="min-h-screen bg-gray-50 pt-24 pb-12">
+      <main className="flex-1 bg-gray-50 pt-24 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-8">
@@ -446,7 +449,8 @@ function SearchContent() {
           </div>
         </div>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }
 

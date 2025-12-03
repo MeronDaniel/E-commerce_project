@@ -14,6 +14,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  accessToken: string | null;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   register: (email: string, fullName: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
@@ -29,6 +30,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
   // Check for existing session on mount
   useEffect(() => {
@@ -37,9 +39,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const checkAuth = async () => {
-    const accessToken = localStorage.getItem('access_token');
+    const token = localStorage.getItem('access_token');
+    setAccessToken(token);
     
-    if (!accessToken) {
+    if (!token) {
       setIsLoading(false);
       return;
     }
@@ -47,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await fetch(`${API_URL}/auth/me`, {
         headers: {
-          'Authorization': `Bearer ${accessToken}`
+          'Authorization': `Bearer ${token}`
         }
       });
 
@@ -85,6 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('access_token', data.access_token);
+        setAccessToken(data.access_token);
         await checkAuth();
         return true;
       }
@@ -95,14 +99,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return false;
   };
 
-  const setTokens = (accessToken: string, refreshToken: string) => {
-    localStorage.setItem('access_token', accessToken);
+  const setTokens = (newAccessToken: string, refreshToken: string) => {
+    localStorage.setItem('access_token', newAccessToken);
     localStorage.setItem('refresh_token', refreshToken);
+    setAccessToken(newAccessToken);
   };
 
   const clearTokens = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
+    setAccessToken(null);
     setUser(null);
   };
 
@@ -213,6 +219,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         isLoading,
         isAuthenticated: !!user,
+        accessToken,
         login,
         register,
         logout,

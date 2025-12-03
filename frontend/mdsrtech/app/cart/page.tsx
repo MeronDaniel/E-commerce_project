@@ -4,10 +4,11 @@ import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/contexts/ToastContext';
-import { ShoppingCart, LogIn, Trash2, Plus, Minus, Tag, ArrowRight, Package, Sparkles } from 'lucide-react';
+import { ShoppingCart, LogIn, Trash2, Plus, Minus, Tag, ArrowRight, Package, Sparkles, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -68,6 +69,7 @@ export default function CartPage() {
   } | null>(null);
   const [isApplyingPromo, setIsApplyingPromo] = useState(false);
   const [inputValues, setInputValues] = useState<Record<number, string>>({});
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const fetchCart = useCallback(async () => {
     try {
@@ -282,28 +284,57 @@ export default function CartPage() {
     showToast('Promo code removed', 'success');
   };
 
+  const handleCheckout = async () => {
+    setIsCheckingOut(true);
+    
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await fetch(`${API_URL}/checkout/create-session`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.checkout_url) {
+        // Redirect to Stripe checkout
+        window.location.href = data.checkout_url;
+      } else {
+        showToast(data.error || 'Failed to start checkout', 'error');
+        setIsCheckingOut(false);
+      }
+    } catch {
+      showToast('Failed to start checkout', 'error');
+      setIsCheckingOut(false);
+    }
+  };
+
   // Show loading state
   if (authLoading || isLoading) {
     return (
-      <>
+      <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="min-h-screen bg-gray-50 pt-24 pb-12">
+        <main className="flex-1 bg-gray-50 pt-24 pb-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-center items-center h-64">
               <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
             </div>
           </div>
         </main>
-      </>
+        <Footer />
+      </div>
     );
   }
 
   // Not authenticated - show login prompt
   if (!isAuthenticated) {
     return (
-      <>
+      <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="min-h-screen bg-gray-50 pt-24 pb-12">
+        <main className="flex-1 bg-gray-50 pt-24 pb-12">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 text-center">
               <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -339,16 +370,17 @@ export default function CartPage() {
             </div>
           </div>
         </main>
-      </>
+        <Footer />
+      </div>
     );
   }
 
   // Empty cart
   if (!cart || cart.items.length === 0) {
     return (
-      <>
+      <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="min-h-screen bg-gray-50 pt-24 pb-12">
+        <main className="flex-1 bg-gray-50 pt-24 pb-12">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 text-center">
               <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -370,15 +402,16 @@ export default function CartPage() {
             </div>
           </div>
         </main>
-      </>
+        <Footer />
+      </div>
     );
   }
 
   // Cart with items
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="min-h-screen bg-gray-50 pt-24 pb-12">
+      <main className="flex-1 bg-gray-50 pt-24 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
@@ -646,11 +679,33 @@ export default function CartPage() {
 
                 {/* Checkout Button */}
                 <button
-                  className="w-full py-4 bg-blue-600 text-white rounded-xl font-semibold text-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  onClick={handleCheckout}
+                  disabled={isCheckingOut}
+                  className="w-full py-4 bg-blue-600 text-white rounded-xl font-semibold text-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:bg-blue-400 disabled:cursor-not-allowed"
                 >
-                  Continue to Checkout
-                  <ArrowRight className="w-5 h-5" />
+                  {isCheckingOut ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Redirecting to Checkout...
+                    </>
+                  ) : (
+                    <>
+                      Continue to Checkout
+                      <ArrowRight className="w-5 h-5" />
+                    </>
+                  )}
                 </button>
+
+                {/* Test Mode Notice */}
+                <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+                  <p className="text-sm font-semibold text-yellow-800 mb-2">🧪 Test Mode</p>
+                  <p className="text-xs text-yellow-700 mb-2">Use these test card numbers:</p>
+                  <div className="space-y-1 text-xs font-mono text-yellow-800">
+                    <p><span className="text-green-600">✓</span> Success: <span className="select-all">4242 4242 4242 4242</span></p>
+                    <p><span className="text-red-600">✗</span> Decline: <span className="select-all">4000 0000 0000 0002</span></p>
+                  </div>
+                  <p className="text-xs text-yellow-600 mt-2">Any future date • Any 3-digit CVC</p>
+                </div>
 
                 {/* Continue Shopping */}
                 <Link
@@ -664,6 +719,7 @@ export default function CartPage() {
           </div>
         </div>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }

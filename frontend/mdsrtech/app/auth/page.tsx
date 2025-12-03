@@ -60,55 +60,53 @@ function TermsContent() {
     <div className="space-y-6 text-gray-700">
       <p className="text-sm text-gray-500">Last updated: December 2, 2025</p>
       
-      <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">1. Acceptance of Terms</h3>
-        <p>By accessing and using MDSRTech ("the Website"), you accept and agree to be bound by the terms and conditions of this agreement. If you do not agree to these terms, please do not use our services.</p>
-      </section>
+      {/* Demo Disclaimer Banner */}
+      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <p className="text-yellow-800 font-semibold">⚠️ Important Notice</p>
+        <p className="text-yellow-700 text-sm mt-1">
+          This website is a demonstration project created for educational purposes. This is NOT a real e-commerce store. No actual purchases can be made, and no real products are for sale.
+        </p>
+      </div>
 
       <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">2. Use of Service</h3>
-        <p>You agree to use the Website only for lawful purposes. You are prohibited from:</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">1. Demonstration Purpose</h3>
+        <p>MDSRTech is a demonstration website created solely for educational and portfolio purposes. This website:</p>
         <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
-          <li>Using the service for any fraudulent or unlawful purpose</li>
-          <li>Attempting to gain unauthorized access to our systems</li>
-          <li>Interfering with or disrupting the service</li>
-          <li>Transmitting any viruses or malicious code</li>
+          <li>Does NOT sell any real products</li>
+          <li>Does NOT process any real payments (uses Stripe test mode only)</li>
+          <li>Is NOT affiliated with any brands, companies, or products displayed</li>
+          <li>Should NOT be used to attempt real purchases</li>
         </ul>
       </section>
 
       <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">3. Account Registration</h3>
-        <p>When you create an account, you must provide accurate and complete information. You are responsible for maintaining the confidentiality of your account credentials and for all activities under your account.</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">2. No Commercial Activity</h3>
+        <p>This website does not engage in any commercial activity. All product images, names, and descriptions are used for demonstration purposes only. We do not own, sell, or distribute any of the products shown on this website.</p>
       </section>
 
       <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">4. Products and Pricing</h3>
-        <p>All product descriptions and prices are subject to change without notice. We reserve the right to refuse or cancel any order for any reason, including but not limited to product availability, errors in pricing, or suspected fraud.</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">3. Third-Party Trademarks</h3>
+        <p>All product names, logos, and brands displayed on this website are property of their respective owners. The use of these names, logos, and brands does not imply endorsement or affiliation. They are used solely for demonstration purposes.</p>
       </section>
 
       <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">5. Payment Terms</h3>
-        <p>Payment must be made at the time of purchase. We accept major credit cards and other payment methods as displayed during checkout. All transactions are processed securely through our payment providers.</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">4. Test Payment System</h3>
+        <p>The payment system on this website operates in Stripe&apos;s test mode. Only test card numbers will work. No real credit cards will be charged. Test card numbers are provided during checkout for demonstration purposes.</p>
       </section>
 
       <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">6. Shipping and Delivery</h3>
-        <p>Shipping times and costs vary based on location and shipping method selected. We are not responsible for delays caused by customs, weather, or carrier issues.</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">5. User Accounts</h3>
+        <p>While you can create an account on this website, please be aware:</p>
+        <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
+          <li>This is a demonstration project and may be taken offline at any time</li>
+          <li>Data may be cleared periodically</li>
+          <li>Do not use sensitive passwords you use elsewhere</li>
+        </ul>
       </section>
 
       <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">7. Returns and Refunds</h3>
-        <p>Products may be returned within 30 days of delivery in their original condition. Refunds will be processed within 5-10 business days after we receive the returned item. Shipping costs are non-refundable.</p>
-      </section>
-
-      <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">8. Limitation of Liability</h3>
-        <p>MDSRTech shall not be liable for any indirect, incidental, special, or consequential damages arising from the use of our services or products.</p>
-      </section>
-
-      <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">9. Contact Information</h3>
-        <p>For questions about these Terms, please contact us at support@mdsrtech.com</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">6. Limitation of Liability</h3>
+        <p>This website is provided &quot;as is&quot; for demonstration purposes. The creators make no warranties about the accuracy, reliability, or availability of the website. We are not liable for any issues arising from the use of this demonstration website.</p>
       </section>
     </div>
   );
@@ -120,71 +118,65 @@ function PrivacyContent() {
     <div className="space-y-6 text-gray-700">
       <p className="text-sm text-gray-500">Last updated: December 2, 2025</p>
       
+      {/* Demo Disclaimer Banner */}
+      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <p className="text-yellow-800 font-semibold">⚠️ Important Notice</p>
+        <p className="text-yellow-700 text-sm mt-1">
+          This is a demonstration website for educational purposes. While we handle data responsibly, 
+          this is a student project and not a production-grade e-commerce platform.
+        </p>
+      </div>
+
       <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">1. Information We Collect</h3>
-        <p>We collect information you provide directly to us, including:</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">1. Project Context</h3>
+        <p>MDSRTech is a demonstration project created for CSCI 4230U - Advanced Web Development. This privacy policy explains how data is handled in this educational context.</p>
+      </section>
+
+      <section>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">2. Information Collected</h3>
+        <p>For demonstration purposes, the website may collect:</p>
         <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
-          <li>Name and email address when you create an account</li>
-          <li>Billing and shipping address for orders</li>
-          <li>Payment information (processed securely by our payment providers)</li>
-          <li>Order history and preferences</li>
-          <li>Communications you send to us</li>
+          <li>Email address and name (for account creation)</li>
+          <li>Demo order information</li>
+          <li>Test cart and wishlist data</li>
+        </ul>
+        <p className="mt-2 text-sm text-gray-500">Note: No real payment information is collected. Stripe test mode does not process real cards.</p>
+      </section>
+
+      <section>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">3. How Information is Used</h3>
+        <p>Information collected is used solely for:</p>
+        <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
+          <li>Demonstrating e-commerce functionality</li>
+          <li>Testing authentication flows</li>
+          <li>Sending demo order confirmation emails</li>
+          <li>Academic project evaluation</li>
         </ul>
       </section>
 
       <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">2. How We Use Your Information</h3>
-        <p>We use the information we collect to:</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">4. Data Storage</h3>
+        <p>Data is stored using a PostgreSQL database and is used solely for demonstration purposes. This data may be:</p>
         <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
-          <li>Process and fulfill your orders</li>
-          <li>Send order confirmations and shipping updates</li>
-          <li>Provide customer support</li>
-          <li>Send promotional communications (with your consent)</li>
-          <li>Improve our services and user experience</li>
-          <li>Detect and prevent fraud</li>
+          <li>Cleared periodically without notice</li>
+          <li>Deleted when the project is concluded</li>
+          <li>Not backed up or permanently retained</li>
         </ul>
       </section>
 
       <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">3. Information Sharing</h3>
-        <p>We do not sell your personal information. We may share your information with:</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">5. No Data Selling</h3>
+        <p>We do not sell, trade, or otherwise transfer your information to third parties. This is an educational project with no commercial interest.</p>
+      </section>
+
+      <section>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">6. Recommendations</h3>
+        <p>As this is a demo project:</p>
         <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
-          <li>Service providers who assist in our operations (shipping, payment processing)</li>
-          <li>Legal authorities when required by law</li>
-          <li>Business partners with your explicit consent</li>
+          <li>Do not use passwords you use on other important sites</li>
+          <li>Use test card numbers only (provided at checkout)</li>
+          <li>Do not enter real sensitive personal information</li>
         </ul>
-      </section>
-
-      <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">4. Data Security</h3>
-        <p>We implement industry-standard security measures to protect your personal information, including encryption, secure servers, and regular security audits. However, no method of transmission over the internet is 100% secure.</p>
-      </section>
-
-      <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">5. Cookies and Tracking</h3>
-        <p>We use cookies and similar technologies to enhance your browsing experience, analyze site traffic, and personalize content. You can control cookie settings through your browser preferences.</p>
-      </section>
-
-      <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">6. Your Rights</h3>
-        <p>You have the right to:</p>
-        <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
-          <li>Access the personal information we hold about you</li>
-          <li>Request correction of inaccurate information</li>
-          <li>Request deletion of your personal information</li>
-          <li>Opt out of marketing communications</li>
-          <li>Export your data in a portable format</li>
-        </ul>
-      </section>
-
-      <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">7. Data Retention</h3>
-        <p>We retain your personal information for as long as necessary to fulfill the purposes outlined in this policy, unless a longer retention period is required by law.</p>
-      </section>
-
-      <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">8. Contact Us</h3>
-        <p>If you have questions about this Privacy Policy or your personal data, please contact us at privacy@mdsrtech.com</p>
       </section>
     </div>
   );
